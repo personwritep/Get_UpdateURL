@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Get UpdateURL 🔵
 // @namespace        http://tampermonkey.net/
-// @version        0.1
-// @description        自動更新用のURL・メタデータを生成
+// @version        0.2
+// @description        自動更新用のURL・メタデータを生成　　ショートカット「F10」
 // @author        personwritep
 // @match        https://github.com/personwritep/*
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=github.com
@@ -21,23 +21,50 @@ function check_key(event){
 
 
 function make_mata(){
+    let file_name; // 入力枠に記入されたファイル名
+    let meta_url; // 生成するURL
     let now_url=location.href;
     let all_part=now_url.split('/');
 
-    let meta_url;
-    if(all_part.length==8){
-        all_part[5]='raw';
-        all_part[7]=all_part[4]+'.user.js';
+    if(all_part.length>6){
 
-        meta_url=all_part.join('/');
+        let fname_input=document.querySelector('.iAceCs>.UnstyledTextInput__ToggledUnstyledTextInput-sc-14ypya-0');
+        if(!fname_input){
+            alert("ファイル名の入力枠がありません"); }
+        else{
+            file_name=fname_input.value;
+            if(file_name=='' || !file_name){
+                alert("ファイル名を入力してください"); }
+            else{
+                if(file_name.includes('.user.js')){
+                    all_part[7]=file_name; } // 入力枠のファイル名を設定
+                else{
+                    let name_parts=file_name.split('_');
+                    if(name_parts.length>1){ // バージョンがあると思われる場合
+                        let file_ver=name_parts[name_parts.length-1]; // 最後の「_0.3」等のバージョン表示を取得
+                        file_ver=file_ver.replace(/\./g, ''); // ドットを削除
+                        if(file_ver.match(/^[0-9]+$/)){
+                            name_parts.pop(); }} // 末尾がバージョン表示なら削除
+                    all_part[7]=name_parts.join('_') +'.user.js'; }
 
-        let add_meta_url=
-            '// @updateURL        '+ meta_url +'\n'+
-            '// @downloadURL        '+ meta_url;
+
+                all_part[5]='raw';
+                meta_url=all_part.join('/');
+
+                let add_meta_url=
+                    '// @updateURL        '+ meta_url +'\n'+
+                    '// @downloadURL        '+ meta_url;
 
 
-        if (navigator.clipboard && add_meta_url){ // copyToClipboardを実行
-            navigator.clipboard.writeText(add_meta_url);
+                if (navigator.clipboard && add_meta_url){ // copyToClipboardを実行
+                    navigator.clipboard.writeText(add_meta_url);
 
-            alert("クリップボードに「Update URL」を生成保存しました"); }
-    }}
+                    alert("クリップボードに「Update URL」を生成保存しました"); }
+
+            } // if(file_name=='' || !file_name)
+
+        } // if(!fname_input)
+
+    } // if(all_part.length>6)
+
+} // make_mata()
