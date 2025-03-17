@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Get UpdateURL 🔵
 // @namespace        http://tampermonkey.net/
-// @version        0.2
+// @version        0.3
 // @description        自動更新用のURL・メタデータを生成　　ショートカット「F10」
 // @author        personwritep
 // @match        https://github.com/personwritep/*
@@ -27,8 +27,7 @@ function make_mata(){
     let all_part=now_url.split('/');
 
     if(all_part.length>6){
-
-        let fname_input=document.querySelector('.iAceCs>.UnstyledTextInput__ToggledUnstyledTextInput-sc-14ypya-0');
+        let fname_input=document.querySelector('input[aria-label="File name"]');
         if(!fname_input){
             alert("ファイル名の入力枠がありません"); }
         else{
