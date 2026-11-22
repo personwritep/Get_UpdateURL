@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Get UpdateURL 🔵
 // @namespace        http://tampermonkey.net/
-// @version        0.4
+// @version        0.5
 // @description        自動更新用のURL・メタデータを生成　　ショートカット「F10」
 // @author        personwritep
 // @match        https://github.com/personwritep/*
@@ -24,6 +24,7 @@ function make_mata(){
     let file_name; // 入力枠に記入されたファイル名
     let meta_url; // 生成するURL
     let now_url=location.href;
+    now_url=now_url.split('?')[0];
     let all_part=now_url.split('/');
 
     if(all_part.length>6){
